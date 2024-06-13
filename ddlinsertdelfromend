@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure of a node in the doubly linked list
+typedef struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+} Node;
+
+// Function to insert a node at the end of a doubly linked list
+Node *insertatend(Node *head, int v) {
+    // Allocate memory for the new node
+    Node *nn = (Node *)malloc(sizeof(Node));
+    if (nn == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return head;  // Return the original head unchanged
+    }
+
+    // Initialize the new node
+    nn->data = v;
+    nn->prev = NULL;
+    nn->next = NULL;
+
+    // If the list is empty, set the new node as the head
+    if (head == NULL) {
+        head = nn;
+    } else {
+        // Traverse to the end of the list
+        Node *temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        // Link the new node with the last node
+        temp->next = nn;
+        nn->prev = temp;
+    }
+
+    return head;
+}
+
+// Function to delete a node from the end of a doubly linked list
+Node *delatend(Node *head) {
+    if (head == NULL)
+        return head;  // If the list is empty, nothing to delete, return NULL
+
+    // If there is only one node in the list
+    if (head->next == NULL) {
+        free(head);
+        return NULL;
+    }
+
+    // Traverse to the end of the list
+    Node *temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    // Unlink the last node and adjust the previous node's next pointer
+    temp->prev->next = NULL;
+    free(temp);
+
+    return head;  // Return the updated head of the list
+}
+
+// Function to print the doubly linked list
+void printList(Node *head) {
+    Node *temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to free memory allocated for the doubly linked list
+void freeList(Node *head) {
+    Node *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node *head = NULL;
+    int value;
+    char choice;
+
+    // Insert nodes at the end
+    do {
+        printf("Enter a value to insert at the end of the list: ");
+        scanf("%d", &value);
+
+        // Insert the value at the end of the list
+        head = insertatend(head, value);
+
+        printf("Do you want to insert another value? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+
+    // Print the doubly linked list after insertions
+    printf("Doubly linked list after insertions: ");
+    printList(head);
+
+    // Delete nodes from the end
+    do {
+        printf("Do you want to delete a node from the end? (y/n): ");
+        scanf(" %c", &choice);
+
+        if (choice == 'y' || choice == 'Y') {
+            head = delatend(head);  // Delete node from the end
+            printf("Doubly linked list after deletion: ");
+            printList(head);
+        }
+    } while (choice == 'y' || choice == 'Y');
+
+    // Free memory allocated for the doubly linked list
+    freeList(head);
+
+    return 0;
+}
