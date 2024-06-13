@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure of a node in the circular linked list
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// Function to insert a node at the end of a circular linked list
+Node *cllinsatend(Node *tail, int v) {
+    // Allocate memory for the new node
+    Node *nn = (Node *)malloc(sizeof(Node));
+    if (nn == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return tail;  // Return the original tail unchanged
+    }
+
+    // Initialize the new node
+    nn->data = v;
+    nn->next = NULL;
+
+    // If the list is empty, set the new node to point to itself
+    if (tail == NULL) {
+        nn->next = nn;
+        return nn;  // Return the new node as the tail
+    }
+
+    // Insert the new node at the end of the circular list
+    nn->next = tail->next;  // New node points to the head
+    tail->next = nn;  // Tail points to the new node
+    tail = nn;  // Update tail to the new node
+
+    return tail;  // Return the updated tail
+}
+
+// Function to delete a node from the end of a circular linked list
+Node *clldelatend(Node *tail) {
+    if (tail == NULL)
+        return NULL;  // If the list is empty, nothing to delete
+
+    // If there is only one node in the list
+    if (tail->next == tail) {
+        free(tail);
+        return NULL;
+    }
+
+    // Find the node just before the tail
+    Node *current = tail->next;
+    while (current->next != tail) {
+        current = current->next;
+    }
+
+    // Delete the tail node
+    current->next = tail->next;  // Update the next pointer of the node before tail
+    free(tail);  // Free the memory of the old tail
+    tail = current;  // Update tail to the new last node
+
+    return tail;  // Return the updated tail
+}
+
+// Function to print the circular linked list
+void printList(Node *tail) {
+    if (tail == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    Node *temp = tail->next;  // Start from the head
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while (temp != tail->next);  // Loop until we are back at the head
+    printf("\n");
+}
+
+// Function to free memory allocated for the circular linked list
+void freeList(Node *tail) {
+    if (tail == NULL)
+        return;
+
+    Node *current = tail->next;  // Start from the head
+    Node *nextNode;
+
+    do {
+        nextNode = current->next;
+        free(current);
+        current = nextNode;
+    } while (current != tail->next);
+}
+
+int main() {
+    Node *tail = NULL;
+    int value;
+    char choice;
+
+    // Insert nodes at the end
+    do {
+        printf("Enter a value to insert at the end of the list: ");
+        scanf("%d", &value);
+
+        // Insert the value at the end of the list
+        tail = cllinsatend(tail, value);
+
+        printf("Do you want to insert another value? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+
+    // Print the circular linked list after insertions
+    printf("Circular linked list after insertions: ");
+    printList(tail);
+
+    // Delete nodes from the end
+    do {
+        printf("Do you want to delete a node from the end? (y/n): ");
+        scanf(" %c", &choice);
+
+        if (choice == 'y' || choice == 'Y') {
+            tail = clldelatend(tail);  // Delete node from the end
+            printf("Circular linked list after deletion: ");
+            printList(tail);
+        }
+    } while (choice == 'y' || choice == 'Y');
+
+    // Free memory allocated for the circular linked list
+    freeList(tail);
+
+    return 0;
+}
