@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure definition
+
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Function to create a new node
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to create the binary tree from user input recursively
+
+struct Node* create_binary_tree() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter root node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = create_binary_tree();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = create_binary_tree();
+    
+    return root;
+}
+
+// Preorder traversal function
+
+void preorder(struct Node *rt) { 
+    if (rt) { // check if rt is not NULL
+        printf("%d ", rt->data); // print current node's data
+        preorder(rt->left); // recursively traverse left subtree
+        preorder(rt->right); // recursively traverse right subtree
+    }
+}
+
+// Inorder traversal function
+
+void inorder(struct Node *root) {
+    if(root) { // check if root is not NULL
+        inorder(root->left); // recursively traverse left subtree
+        printf("%d ", root->data); // print current node's data
+        inorder(root->right); // recursively traverse right subtree
+    }
+}
+
+// Postorder traversal function
+
+void postorder(struct Node *rt) {
+    if (rt) { // check if rt is not NULL
+        postorder(rt->left); // recursively traverse left subtree
+        postorder(rt->right); // recursively traverse right subtree
+        printf("%d ", rt->data); // print current node's data
+    }
+}
+
+// Main function to demonstrate usage
+
+int main() {
+    struct Node *root = create_binary_tree(); // Create a binary tree based on user input
+    
+    if (root == NULL) {
+        printf("Binary tree is empty.\n");
+    } else {
+        printf("\nPreorder traversal: ");
+        preorder(root);
+        printf("\n");
+        
+        printf("Inorder traversal: ");
+        inorder(root);
+        printf("\n");
+        
+        printf("Postorder traversal: ");
+        postorder(root);
+        printf("\n");
+    }
+    
+    return 0;
+} 
