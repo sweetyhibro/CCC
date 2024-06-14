@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure definition
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Function to create a new binary tree node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to build a binary tree from user input recursively
+struct Node* buildTreeFromInput() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = buildTreeFromInput();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = buildTreeFromInput();
+    
+    return root;
+}
+
+// Function to compare two binary trees for equality
+int compareTrees(struct Node* rt1, struct Node* rt2) {
+    // Base cases
+    if (rt1 == NULL && rt2 == NULL)
+        return 1; // Both trees are empty
+    if (rt1 == NULL || rt2 == NULL)
+        return 0; // One tree is empty, the other is not
+    
+    // Check current nodes' data and recursively compare subtrees
+    return (rt1->data == rt2->data) &&
+           compareTrees(rt1->left, rt2->left) &&
+           compareTrees(rt1->right, rt2->right);
+}
+
+int main() {
+    struct Node* root1;
+    struct Node* root2;
+    
+    // Build the first binary tree from user input
+    printf("Enter elements for the first binary tree:\n");
+    root1 = buildTreeFromInput();
+    
+    // Build the second binary tree from user input
+    printf("Enter elements for the second binary tree:\n");
+    root2 = buildTreeFromInput();
+    
+    // Compare the two trees
+    if (compareTrees(root1, root2)) {
+        printf("The two binary trees are identical.\n");
+    } else {
+        printf("The two binary trees are not identical.\n");
+    }
+    
+    return 0;
+}
