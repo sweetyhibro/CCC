@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h> // For INT_MIN
+
+// Node structure definition
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Function to create a new binary tree node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to create a binary tree from user input recursively
+struct Node* create_binary_tree() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = create_binary_tree();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = create_binary_tree();
+    
+    return root;
+}
+
+// Function to find the maximum value in the binary tree
+int findMax(struct Node *rt) { 
+    if(rt == NULL) 
+        return INT_MIN;  // Return minimum possible value if the tree is empty
+    
+    // If the node is a leaf node, return its data
+    if(rt->left == NULL && rt->right == NULL) 
+        return rt->data;
+    
+    // Recursively find the maximum value in the left and right subtrees
+    int l = findMax(rt->left);
+    int r = findMax(rt->right);
+    
+    // Return the maximum value among the current node's data, left subtree's max, and right subtree's max
+    return (rt->data > l ? (rt->data > r ? rt->data : r) : (l > r ? l : r));
+}
+
+int main() {
+    struct Node *root = create_binary_tree(); // Create a binary tree based on user input
+    
+    if (root == NULL) {
+        printf("Binary tree is empty.\n");
+    } else {
+        int max_value = findMax(root);
+        printf("Maximum value in the binary tree: %d\n", max_value);
+    }
+    
+    return 0;
+}
