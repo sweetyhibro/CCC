@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure of a node in the doubly linked list
+typedef struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+} Node;
+
+// Function to reverse a doubly linked list
+Node *dllreverse(Node *head) {
+    Node *cur = head;
+    Node *prev = NULL;
+    Node *next = NULL;
+
+    // Traverse through the list and reverse pointers
+    while (cur != NULL) {
+        // Store next node before we change pointers
+        next = cur->next;
+
+        // Reverse pointers
+        cur->next = prev;
+        cur->prev = next;
+
+        // Move pointers one position ahead
+        prev = cur;
+        cur = next;
+    }
+
+    // Now 'prev' is the new head of the reversed list
+    return prev;
+}
+
+// Function to create a new node with given data
+Node *createNode(int data) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert a node at the end of the doubly linked list
+Node *insertAtEnd(Node *head, int data) {
+    Node *newNode = createNode(data);
+
+    if (head == NULL) {
+        return newNode;
+    }
+
+    Node *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    current->next = newNode;
+    newNode->prev = current;
+
+    return head;
+}
+
+// Function to print the doubly linked list
+void printList(Node *head) {
+    Node *temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to free memory allocated for the doubly linked list
+void freeList(Node *head) {
+    Node *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+int main() {
+    Node *head = NULL;
+    int value;
+    char choice;
+
+    // Insert nodes into the doubly linked list
+    do {
+        printf("Enter a value to insert into the list: ");
+        scanf("%d", &value);
+
+        head = insertAtEnd(head, value);
+
+        printf("Do you want to insert another value? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+
+    // Reverse the doubly linked list
+    head = dllreverse(head);
+    printList(head);
+
+    // Free memory allocated for the doubly linked list
+    freeList(head);
+
+    return 0;
+}
