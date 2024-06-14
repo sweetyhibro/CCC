@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure definition
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Function to create a new binary tree node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to build a binary tree from user input recursively
+struct Node* buildTreeFromInput() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = buildTreeFromInput();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = buildTreeFromInput();
+    
+    return root;
+}
+
+// Function to print tree structure recursively
+void printTreeStructure(struct Node* rt, int level) {
+    if (rt == NULL) {
+        printf("-\n");
+        return;
+    }
+    
+    printf("%d\n", rt->data);
+    
+    if (rt->left != NULL || rt->right != NULL) {
+        for (int i = 0; i < level; ++i) {
+            printf("  ");
+        }
+        printf("L: ");
+        printTreeStructure(rt->left, level + 1);
+        
+        for (int i = 0; i < level; ++i) {
+            printf("  ");
+        }
+        printf("R: ");
+        printTreeStructure(rt->right, level + 1);
+    }
+}
+
+// Function to recursively create mirror image of a binary tree
+void mirror(struct Node* rt) {
+    if (rt == NULL) {
+        return;
+    }
+    
+    // Swap left and right children
+    struct Node* temp = rt->left;
+    rt->left = rt->right;
+    rt->right = temp;
+    
+    // Recursively mirror the left and right subtrees
+    mirror(rt->left);
+    mirror(rt->right);
+}
+
+int main() {
+    struct Node* root = NULL;
+    
+    // Build the binary tree from user input
+    printf("Enter elements for the binary tree:\n");
+    root = buildTreeFromInput();
+    
+    // Print the original tree structure
+    printf("\nOriginal tree structure:\n");
+    printTreeStructure(root, 0);
+    
+    // Create the mirror image of the tree
+    mirror(root);
+    
+    // Print the mirror image of the tree structure
+    printf("\nMirror image of the tree structure:\n");
+    printTreeStructure(root, 0);
+    
+    return 0;
+}
