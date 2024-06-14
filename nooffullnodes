@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure definition
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Function to create a new binary tree node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to create a binary tree from user input recursively
+struct Node* create_binary_tree() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = create_binary_tree();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = create_binary_tree();
+    
+    return root;
+}
+
+// Function to count the number of full nodes in the binary tree
+int countFullNodes(struct Node *rt) { 
+    if(rt == NULL) 
+        return 0; // If the tree is empty, return 0
+    
+    // Recursively count the full nodes in the left and right subtrees
+    int l = countFullNodes(rt->left);
+    int r = countFullNodes(rt->right);
+    
+    // If the current node has both left and right children, it is a full node
+    if(rt->left != NULL && rt->right != NULL)
+        return 1 + l + r;
+    else
+        return l + r;
+}
+
+int main() {
+    struct Node *root = create_binary_tree(); // Create a binary tree based on user input
+    
+    if (root == NULL) {
+        printf("Binary tree is empty.\n");
+    } else {
+        int fullNodeCount = countFullNodes(root);
+        printf("Number of full nodes in the binary tree: %d\n", fullNodeCount);
+    }
+    
+    return 0;
+}
