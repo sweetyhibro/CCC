@@ -1,0 +1,185 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Node structure definition
+struct Node {
+    int data;
+    struct Node *left;
+    struct Node *right;
+};
+
+// Stack structure for iterative traversal
+struct StackNode {
+    struct Node *node;
+    struct StackNode *next;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to create a stack node
+struct StackNode* createStackNode(struct Node *node) {
+    struct StackNode *stackNode = (struct StackNode*) malloc(sizeof(struct StackNode));
+    stackNode->node = node;
+    stackNode->next = NULL;
+    return stackNode;
+}
+
+// Stack operations
+void push(struct StackNode **top_ref, struct Node *node) {
+    struct StackNode *stackNode = createStackNode(node);
+    stackNode->next = *top_ref;
+    *top_ref = stackNode;
+}
+
+struct Node* pop(struct StackNode **top_ref) {
+    if (*top_ref == NULL) {
+        return NULL;
+    }
+    struct StackNode *temp = *top_ref;
+    *top_ref = (*top_ref)->next;
+    struct Node *node = temp->node;
+    free(temp);
+    return node;
+}
+
+bool isEmpty(struct StackNode *top) {
+    return (top == NULL);
+}
+
+struct Node* top(struct StackNode *top) {
+    if (top == NULL) {
+        return NULL;
+    }
+    return top->node;
+}
+
+// Function to create a binary tree from user input recursively
+struct Node* create_binary_tree() {
+    int data;
+    struct Node* root = NULL;
+    
+    printf("Enter root node value (or -1 to stop): ");
+    scanf("%d", &data);
+    
+    if (data == -1) {
+        return NULL;
+    }
+    
+    root = createNode(data);
+    
+    printf("Enter left child of %d (or -1 if none): ", data);
+    root->left = create_binary_tree();
+    
+    printf("Enter right child of %d (or -1 if none): ", data);
+    root->right = create_binary_tree();
+    
+    return root;
+}
+
+// Iterative preorder traversal
+void iterativePreorder(struct Node *root) {
+    if (root == NULL) {
+        return;
+    }
+    
+    struct StackNode *stack = NULL;
+    push(&stack, root);
+    
+    while (!isEmpty(stack)) {
+        struct Node *node = pop(&stack);
+        printf("%d ", node->data);
+        
+        // Push right child first, then left child
+        if (node->right) {
+            push(&stack, node->right);
+        }
+        if (node->left) {
+            push(&stack, node->left);
+        }
+    }
+}
+
+// Iterative inorder traversal
+void iterativeInorder(struct Node *root) {
+    struct Node *current = root;
+    struct StackNode *stack = NULL;
+    bool done = false;
+    
+    while (!done) {
+        if (current != NULL) {
+            push(&stack, current);
+            current = current->left;
+        } else {
+            if (!isEmpty(stack)) {
+                current = pop(&stack);
+                printf("%d ", current->data);
+                current = current->right;
+            } else {
+                done = true;
+            }
+        }
+    }
+}
+
+// Iterative postorder traversal
+void iterativePostorder(struct Node *root) {
+    if (root == NULL) {
+        return;
+    }
+    
+    struct StackNode *stack1 = NULL;
+    struct StackNode *stack2 = NULL;
+    
+    push(&stack1, root);
+    while (!isEmpty(stack1)) {
+        struct Node *node = pop(&stack1);
+        push(&stack2, node);
+        
+        if (node->left) {
+            push(&stack1, node->left);
+        }
+        if (node->right) {
+            push(&stack1, node->right);
+        }
+    }
+    
+    while (!isEmpty(stack2)) {
+        struct Node *node = pop(&stack2);
+        printf("%d ", node->data);
+    }
+}
+
+// Main function to demonstrate usage
+int main() {
+    struct Node *root = create_binary_tree(); // Create a binary tree based on user input
+    
+    if (root == NULL) {
+        printf("Binary tree is empty.\n");
+    } else {
+        printf("\nIterative Preorder traversal: ");
+        iterativePreorder(root);
+        printf("\n");
+        
+        printf("Iterative Inorder traversal: ");
+        iterativeInorder(root);
+        printf("\n");
+        
+        printf("Iterative Postorder traversal: ");
+        iterativePostorder(root);
+        printf("\n");
+    }
+    
+    return 0;
+}
