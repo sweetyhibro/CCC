@@ -1,0 +1,76 @@
+#include <stdio.h>
+#define SIZE 5
+
+int items[SIZE];
+int front = -1, rear = -1;
+
+int isFull() {
+    return (front == (rear + 1) % SIZE);
+}
+
+int isEmpty() {
+    return (front == -1);
+}
+
+void enqueueFront(int element) {
+    if (isFull()) {
+        printf("Queue is full\n");
+    } else {
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            front = (front - 1 + SIZE) % SIZE;
+        }
+        items[front] = element;
+        printf("Inserted %d at front\n", element);
+    }
+}
+
+int dequeueRear() {
+    int val;
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+        return -1;
+    } else {
+        val = items[rear];
+        if (front == rear) {
+            front = rear = -1;
+        } else {
+            rear = (rear - 1 + SIZE) % SIZE;
+        }
+        printf("Deleted %d from rear\n", val);
+        return val;
+    }
+}
+
+void display() {
+    int i;
+    if (isEmpty()) {
+        printf("Queue is empty\n");
+    } else {
+        printf("Front -> %d\n", front);
+        printf("Items -> ");
+        for (i = front; i != rear; i = (i + 1) % SIZE) {
+            printf("%d ", items[i]);
+        }
+        printf("%d\n", items[i]);
+        printf("Rear -> %d\n", rear);
+    }
+}
+
+int main() {
+    dequeueRear(); 
+    enqueueFront(1);
+    enqueueFront(2);
+    enqueueFront(3);
+    enqueueFront(4);
+    enqueueFront(5);
+    enqueueFront(6); 
+    display();
+    dequeueRear(); 
+    display();
+    enqueueFront(8); 
+    display();
+    enqueueFront(9); 
+    return 0;
+}
