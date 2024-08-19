@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int multiply(int a, int b) {
+    int c = 0;
+    while (b > 0) {
+        if (b % 2 != 0) c = c + a;
+        a = a * 2;
+        b = b / 2;
+    }
+    return c;
+}
+
+int main() {
+    int a, b;
+    printf("Enter values for a and b: ");
+    scanf("%d %d", &a, &b);
+    int result = multiply(a, b);
+    printf("The result of %d * %d is: %d\n", a, b, result);
+    return 0;
+}
