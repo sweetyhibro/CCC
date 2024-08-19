@@ -1,28 +1,23 @@
 #include <stdio.h>
 
-int findLastSurvivor(int n) {
-    int soldiers[n];
-    for (int i = 0; i < n; i++) soldiers[i] = i + 1;
-    
-    int alive = n, killIndex = 0;
-
-    while (alive > 1) {
-        int nextKill = (killIndex + 1) % alive;
-        for (int i = nextKill; i < alive - 1; i++) soldiers[i] = soldiers[i + 1];
-        alive--;
-        killIndex = nextKill % alive;
+int s(int n) {
+    int x = n;
+    while (x > 0) {
+        if ((x & (x - 1)) == 0) {
+            return (n - x) * 2 + 1;
+        }
+        x--;
     }
-
-    return soldiers[0];
+    return -1;
 }
 
 int main() {
     int n;
-    printf("Enter the number of soldiers: ");
+    printf("Enter the value of n: ");
     scanf("%d", &n);
 
-    int lastSurvivor = findLastSurvivor(n);
-    printf("The last surviving soldier is at position: %d\n", lastSurvivor);
+    int result = s(n);
+    printf("The result is: %d\n", result);
 
     return 0;
 }
