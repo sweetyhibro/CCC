@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int s(int n) {
+    int highestPowerOfTwo = 1 << (31 - __builtin_clz(n)); // Find the largest power of 2 <= n
+    return (n - highestPowerOfTwo) * 2 + 1;
+}
+
+int main() {
+    int n;
+    printf("Enter the value of n: ");
+    scanf("%d", &n);
+
+    int result = s(n);
+    printf("The result is: %d\n", result);
+
+    return 0;
+}
